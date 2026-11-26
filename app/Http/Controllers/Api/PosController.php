@@ -138,8 +138,11 @@ class PosController extends Controller
             $discountRate = (float) ($validated['discount_rate'] ?? 0);
             $discountAmount = (float) ($validated['discount_amount'] ?? 0);
 
-            if ($discountType === 'percentage' && $discountRate > 0) {
-                $discountAmount = round(($subtotal * $discountRate) / 100, 2);
+            if ($discountType === 'percentage') {
+                $discountAmount = $discountRate > 0 ? round(($subtotal * $discountRate) / 100, 2) : 0;
+            } else {
+                $discountRate = 0;
+                $discountAmount = min($discountAmount, $subtotal);
             }
 
             $netTotal = max(0, $subtotal - $discountAmount);
