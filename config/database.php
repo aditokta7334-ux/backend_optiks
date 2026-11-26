@@ -60,7 +60,11 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                Mysql::ATTR_SSL_CA => ($ca = env('MYSQL_ATTR_SSL_CA')) && file_exists($ca)
+                    ? $ca
+                    : (str_contains((string) env('DB_HOST', ''), 'tidbcloud.com') && file_exists(base_path('certs/isrgrootx1.pem'))
+                        ? base_path('certs/isrgrootx1.pem')
+                        : null),
             ]) : [],
         ],
 
@@ -80,7 +84,11 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                Mysql::ATTR_SSL_CA => ($ca = env('MYSQL_ATTR_SSL_CA')) && file_exists($ca)
+                    ? $ca
+                    : (str_contains((string) env('DB_HOST', ''), 'tidbcloud.com') && file_exists(base_path('certs/isrgrootx1.pem'))
+                        ? base_path('certs/isrgrootx1.pem')
+                        : null),
             ]) : [],
         ],
 
