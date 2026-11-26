@@ -10,10 +10,24 @@ use App\Http\Controllers\Api\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', function () {
+    $dbStatus = 'ok';
+    $dbError = null;
+    try {
+        \Illuminate\Support\Facades\DB::connection()->getPdo();
+    } catch (\Throwable $e) {
+        $dbStatus = 'error';
+        $dbError = $e->getMessage();
+    }
+
     return response()->json([
         'success' => true,
         'app' => 'Optik Arjuna & May Way API',
         'status' => 'ok',
+        'db_connection' => config('database.default'),
+        'db_host' => config('database.connections.' . config('database.default') . '.host'),
+        'db_database' => config('database.connections.' . config('database.default') . '.database'),
+        'db_status' => $dbStatus,
+        'db_error' => $dbError,
         'timestamp' => now()->toIso8601String(),
     ]);
 });
